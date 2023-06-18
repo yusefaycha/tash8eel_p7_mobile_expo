@@ -4,7 +4,7 @@ import React from 'react'
 export default function Nav({query, setQuery}) {
   return (
     <View style={styles.container}>
-      <Text style={styles.appLabel}>wikiloc</Text>
+      <Text style={styles.appLabel}>Go Hiking</Text>
       {/* <TouchableOpacity style={styles.button}>
         <Text style={styles.btnText}>Click me</Text>
       </TouchableOpacity> */}

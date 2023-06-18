@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react'
 import { Colors } from 'react-native/Libraries/NewAppScreen'
 import { getBaseUrl } from '../actions/actions'
 import Logo from './logo.jpg'
+import { __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from 'react/cjs/react.production.min'
 
-export default function EventCard({ event }) {
+export default function EventCard({ event , navigation}) {
 
   const [cover, setCover] = useState('')
 
@@ -26,11 +27,12 @@ export default function EventCard({ event }) {
   )
 
   const handlePress = (e) => {
-    console.log(e._id)
+    // console.log(e)
+    navigation.navigate('DetailsScreen', { event:e , navigation:navigation})
   }
 
   return (
-    <TouchableOpacity onPress={() =>  handlePress(event)}>
+    <TouchableOpacity onPress={() => handlePress(event)}>
       <View style={styles.card}>
         <View style={styles.header}>
           <Image
@@ -49,7 +51,7 @@ export default function EventCard({ event }) {
             <Text>{event.departureTime}</Text>
           </View>
           <Image
-            source={{ uri: cover }}
+            source={cover?{ uri: cover }:null}
             style={styles.image}
           />
         </View>
@@ -66,7 +68,7 @@ const styles = StyleSheet.create({
   },
   card: {
     marginHorizontal: 10,
-    marginTop: 10,
+    marginVertical: 5,
     padding: 10,
     backgroundColor: 'white',
     borderRadius: 5,
