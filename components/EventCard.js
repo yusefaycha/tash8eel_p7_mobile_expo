@@ -42,7 +42,7 @@ export default function EventCard({ event , navigation}) {
           <Text style={styles.title}>{event.name}</Text>
         </View>
         <View style={styles.body}>
-          <View>
+          <View style={styles.info}>
             <Text style={styles.label}>Departure Location:</Text>
             <Text>{event.departureLocation}</Text>
             <Text style={styles.label}>Valid From:</Text>
@@ -78,10 +78,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
 
   },
-  image: {
-    width: 200,
-    height: 150,
-  },
   header: {
     display: 'flex',
     flexDirection: 'row',
@@ -95,6 +91,13 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between'
+  },
+  info: {
+    flex:2,
+  },
+  image: {
+    flex: 3,
+    height: '100%',
   },
   label: {
     fontWeight: 'bold'

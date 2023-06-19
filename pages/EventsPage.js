@@ -1,9 +1,8 @@
-import { StyleSheet, View, Text, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
+import { FlatList, StyleSheet, View } from 'react-native'
 import { getBaseUrl } from '../actions/actions'
 import EventCard from '../components/EventCard'
 import Nav from '../components/Nav'
-import { Button } from 'react-native'
 
 export default function EventsPage({ navigation }) {
     const [events, setEvents] = useState([])
@@ -41,6 +40,13 @@ export default function EventsPage({ navigation }) {
         return <EventCard key={item._id} event={item} navigation={navigation} />
     }
 
+    const search = (events, query) => {
+        return events.filter(e => {
+            return e.name.toLowerCase().includes(query) || e.description.toLowerCase().includes(query)
+        }
+        )
+    }
+
     return (
         <View style={styles.container}>
             <Nav query={query} setQuery={setQuery} />
@@ -48,14 +54,17 @@ export default function EventsPage({ navigation }) {
             {/* <Text>Event Page: </Text> */}
             <FlatList
                 style={styles.list}
-                data={events.filter(e => e.name.toLowerCase().includes(query))}
+                data={search(events, query)}
                 renderItem={renderItem}
                 keyExtractor={(item) => item._id}
                 refreshing={isRefreshing}
-                onEndReachedThreshold={() => {
+                // onEndReachedThreshold={() => {
+                    
+                // }}
+                onRefresh={() => {
                     setIsRefreshing(true)
+                    console.log('refresh')
                 }}
-                onRefresh={() => console.log('refresh')}
             />
             {/* {events.filter(e => e.name.toLowerCase().includes(query)).map(event => {
                 return <EventCard key={event._id} event={event} />

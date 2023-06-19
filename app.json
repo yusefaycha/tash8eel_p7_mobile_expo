@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "hikingapp",
-    "slug": "hikingapp",
+    "slug": "go-hiking",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,10 +21,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.yahya493.gohiking"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "031ac097-f7ef-4158-851c-1ad6a48b32e0"
+      }
+    },
+    "owner": "yahya493"
   }
 }
