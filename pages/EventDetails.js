@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { formatDate, getBaseUrl, getDirectionCoords, getEndMilestone, getPhotos, getStartMilestone, getTrail, milestoneToMarker, srtingToCoordinate } from '../actions/actions';
 import { ScrollView } from 'react-native-gesture-handler';
 import Gallery from 'react-native-image-gallery';
 import MapView, { Polyline } from 'react-native-maps';
+import { formatDate, getMilestoneAndDirectionCoords, getPhotos, getTrail, milestoneToMarker } from '../actions/actions';
 
 export default function EventDetails({ route }) {
 
@@ -21,39 +21,15 @@ export default function EventDetails({ route }) {
     const [photos, setPhotos] = useState([])
 
     useEffect(
-        async () => {
-            const apiURL = getBaseUrl()
+         () => {
             if (event.trail !== '') {
                 getTrail(event, setTrail)
-
-                await fetch(apiURL + '/milestones', {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ trail: event.trail })
-                })
-                    .then(res => res.json())
-                    .then(async milestonesRes => {
-                        milestonesRes = [
-                            getStartMilestone(milestonesRes),
-                            ...milestonesRes.filter(m => m !== getStartMilestone(milestonesRes) && m !== getEndMilestone(milestonesRes)),
-                            getEndMilestone(milestonesRes)
-                        ]
-                        setMilestones(milestonesRes)
-                        setRegion({ ...region, ...srtingToCoordinate(getStartMilestone(milestonesRes).location) })
-                        // console.log(milestonesRes)
-
-                        getDirectionCoords(milestonesRes, setDirectionCoords)
-
-                    })
-                    .catch(error => console.error(error))
+                getMilestoneAndDirectionCoords(event, setMilestones, setRegion, setDirectionCoords)
             }
             getPhotos(event, setPhotos)
         },
         []
     )
-
 
     return (
         <ScrollView>
@@ -78,7 +54,6 @@ export default function EventDetails({ route }) {
                             })}
                             strokeWidth={6}
                             strokeColor='#f00'
-
                         /> :
                         null
                     }

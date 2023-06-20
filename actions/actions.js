@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Marker } from "react-native-maps";
 
 const getBaseUrl = () => {
@@ -45,6 +46,33 @@ const coordsToMarker = (coords, index) => {
     />)
 }
 
+
+const getMilestoneAndDirectionCoords = async (event, setMilestones, setRegion, setDirectionCoords) => {
+    const apiURL = getBaseUrl()
+    await fetch(apiURL + '/milestones', {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ trail: event.trail })
+    })
+        .then(res => res.json())
+        .then(async milestonesRes => {
+            milestonesRes = [
+                getStartMilestone(milestonesRes),
+                ...milestonesRes.filter(m => m !== getStartMilestone(milestonesRes) && m !== getEndMilestone(milestonesRes)),
+                getEndMilestone(milestonesRes)
+            ]
+            setMilestones(milestonesRes)
+            setRegion(region => { return { ...region, ...srtingToCoordinate(getStartMilestone(milestonesRes).location) } })
+            // console.log(milestonesRes)
+
+            getDirectionCoords(milestonesRes, setDirectionCoords)
+
+        })
+        .catch(error => console.error(error))
+}
+
 const milestoneToMarker = (milestone, index) => {
     let color = ''
     switch (milestone.type) {
@@ -78,22 +106,51 @@ const milestoneToMarker = (milestone, index) => {
 //     })
 // }
 
-const getPhotos = async (event, setPhotos) => {
-    const apiURL = getBaseUrl()
-    for (const photoId of event.photos) {
-        console.log(`downloading: ${photoId}`)
-        await fetch(apiURL + '/photos', {
+const getCoverPhoto = async (event, setCover) => {
+    const apiURL = getBaseUrl() + '/photos'
+    const file = await AsyncStorage.getItem(event.photos[0])
+    if (file !== null) {
+        setCover(file)
+    }
+    else {
+        fetch(apiURL, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ _id: photoId })
-        })
-            .then(res => res.json())
-            .then(photo => {
-                setPhotos(p => [...p, photo.myFile])
-                console.log(`download finished: ${photoId}`)
+            body: JSON.stringify({ _id: event.photos[0] })
+        }).then(res => res.json())
+            .then(data => {
+                setCover(data.myFile)
+                AsyncStorage.setItem(data._id, data.myFile)
             })
+    }
+}
+
+const getPhotos = async (event, setPhotos) => {
+    const apiURL = getBaseUrl()
+    for (const photoId of event.photos) {
+        const file = await AsyncStorage.getItem(photoId)
+        if (file !== null) {
+            setPhotos(p => [...p, file])
+        }
+        else {
+            console.log(`downloading: ${photoId}`)
+            await fetch(apiURL + '/photos', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ _id: photoId })
+            })
+                .then(res => res.json())
+                .then(photo => {
+                    setPhotos(p => [...p, photo.myFile])
+                    AsyncStorage.setItem(photo._id, photo.myFile)
+                    console.log(`download finished: ${photoId}`)
+                })
+                .catch(error => console.error(error))
+        }
     }
 }
 
@@ -140,7 +197,9 @@ export {
     coordsToMarker,
     getDirectionURL,
     milestoneToMarker,
+    getCoverPhoto,
     getPhotos,
     getDirectionCoords,
     getTrail,
+    getMilestoneAndDirectionCoords
 }

@@ -1,9 +1,7 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import EventPage from './pages/EventsPage'
-import EventDetails from './pages/EventDetails';
-import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import EventDetails from './pages/EventDetails';
+import EventPage from './pages/EventsPage';
 
 export default function App() {
 
@@ -16,20 +14,5 @@ export default function App() {
         <stack.Screen name='DetailsScreen' component={EventDetails} />
       </stack.Navigator>
     </NavigationContainer>
-    // <EventPage />
-    // <EventDetails />
-    // <View style={styles.container}>
-    //   <Text>Hello Youssef</Text>
-    //   <StatusBar style="auto" />
-    // </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

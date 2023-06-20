@@ -1,34 +1,21 @@
-import { StyleSheet, View, Text, Image, Touchable, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Colors } from 'react-native/Libraries/NewAppScreen'
-import { getBaseUrl } from '../actions/actions'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { getCoverPhoto } from '../actions/actions'
 import Logo from './logo.jpg'
-import { __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from 'react/cjs/react.production.min'
 
-export default function EventCard({ event , navigation}) {
+export default function EventCard({ event, navigation }) {
 
   const [cover, setCover] = useState('')
 
   useEffect(
     () => {
-      const apiURL = getBaseUrl() + '/photos'
-      fetch(apiURL, {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ _id: event.photos[0] })
-      }).then(res => res.json())
-        .then(data => {
-          setCover(data.myFile)
-        })
+      getCoverPhoto(event, setCover)
     },
     []
   )
 
   const handlePress = (e) => {
-    // console.log(e)
-    navigation.navigate('DetailsScreen', { event:e , navigation:navigation})
+    navigation.navigate('DetailsScreen', { event: e })
   }
 
   return (
@@ -51,7 +38,7 @@ export default function EventCard({ event , navigation}) {
             <Text>{event.departureTime}</Text>
           </View>
           <Image
-            source={cover?{ uri: cover }:null}
+            source={cover ? { uri: cover } : null}
             style={styles.image}
           />
         </View>
@@ -93,7 +80,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   info: {
-    flex:2,
+    flex: 2,
   },
   image: {
     flex: 3,
