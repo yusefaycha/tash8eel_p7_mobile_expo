@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { getCoverPhoto } from '../actions/actions'
+import { formatDate, getCoverPhoto } from '../actions/actions'
 import Logo from './logo.jpg'
 
 export default function EventCard({ event, navigation }) {
@@ -30,12 +30,12 @@ export default function EventCard({ event, navigation }) {
         </View>
         <View style={styles.body}>
           <View style={styles.info}>
-            <Text style={styles.label}>Departure Location:</Text>
-            <Text>{event.departureLocation}</Text>
-            <Text style={styles.label}>Valid From:</Text>
-            <Text>{event.validFrom}</Text>
-            <Text style={styles.label}>Departure Time:</Text>
-            <Text>{event.departureTime}</Text>
+            <Text style={styles.label}>Valid From</Text>
+            <Text style={styles.value}>{formatDate(event.validFrom)}</Text>
+            <Text style={styles.label}>Valid To</Text>
+            <Text style={styles.value}>{formatDate(event.validTo)}</Text>
+            <Text style={styles.label}>Fees</Text>
+            <Text style={styles.value}>{event.fees} $</Text>
           </View>
           <Image
             source={cover ? { uri: cover } : null}
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   },
   card: {
     marginHorizontal: 10,
-    marginVertical: 5,
+    marginBottom: 10,
     padding: 10,
     backgroundColor: 'white',
     borderRadius: 5,
@@ -63,14 +63,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-
+    marginRight: 10
   },
   header: {
     display: 'flex',
     flexDirection: 'row',
     // height: 50,
-    borderBottomWidth: 1,
-    borderBottomColor: 'lightgray',
     paddingBottom: 10,
 
   },
@@ -81,12 +79,20 @@ const styles = StyleSheet.create({
   },
   info: {
     flex: 2,
+    marginRight: 10,
+    borderTopWidth: 1,
+    borderTopColor: 'lightgray',
   },
   image: {
     flex: 3,
     height: '100%',
+    borderRadius: 3
   },
   label: {
-    fontWeight: 'bold'
+    color: 'gray'
+  },
+  value: {
+    fontWeight: 'bold',
+    marginLeft: 0
   }
 })

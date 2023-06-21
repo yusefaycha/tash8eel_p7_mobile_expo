@@ -69,6 +69,6 @@ const styles = StyleSheet.create({
         height: '100%'
     },
     list: {
-        
+        paddingTop: 10
     }
 })

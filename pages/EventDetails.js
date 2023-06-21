@@ -118,6 +118,7 @@ export default function EventDetails({ route }) {
                             photos.map(p => { return { source: { uri: p } } })
                         }
                     />
+                    <Text style={styles.label}>Description</Text>
                     <Text style={styles.description}>{event.description}</Text>
                 </View>
             </View>

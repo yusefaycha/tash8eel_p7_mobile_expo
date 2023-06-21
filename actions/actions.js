@@ -58,15 +58,15 @@ const getMilestoneAndDirectionCoords = async (event, setMilestones, setRegion, s
     })
         .then(res => res.json())
         .then(async milestonesRes => {
+            const start = getStartMilestone(milestonesRes)
+            const end = getEndMilestone(milestonesRes)
             milestonesRes = [
-                getStartMilestone(milestonesRes),
-                ...milestonesRes.filter(m => m !== getStartMilestone(milestonesRes) && m !== getEndMilestone(milestonesRes)),
-                getEndMilestone(milestonesRes)
+                start,
+                ...milestonesRes.filter(m => m._id !== start._id && m._id !== end._id),
+                end
             ]
             setMilestones(milestonesRes)
             setRegion(region => { return { ...region, ...srtingToCoordinate(getStartMilestone(milestonesRes).location) } })
-            // console.log(milestonesRes)
-
             getDirectionCoords(milestonesRes, setDirectionCoords)
 
         })
@@ -97,14 +97,6 @@ const milestoneToMarker = (milestone, index) => {
     // image={milestone.photos[0]}
     />)
 }
-
-
-// const milestoneToDirectionCoord = (milestone) => {
-//     return ({
-//         latitude: +milestone.location.split(',')[1],
-//         longitude: +milestone.location.split(',')[0],
-//     })
-// }
 
 const getCoverPhoto = async (event, setCover) => {
     const apiURL = getBaseUrl() + '/photos'
@@ -161,12 +153,10 @@ const getDirectionCoords = async (milestones, setDirectionCoords) => {
             `,${srtingToCoordinate(milestones[i].location).latitude}` +
             `&end=${srtingToCoordinate(milestones[i + 1].location).longitude}` +
             `,${srtingToCoordinate(milestones[i + 1].location).latitude}`
-        // console.log(url)
         await fetch(url)
             .then(res => res.json())
             .then(data => {
                 setDirectionCoords(p => [...p, ...data.features[0].geometry.coordinates])
-                // console.log(data.features[0].geometry.coordinates)
             })
             .catch(error => console.error(error))
     }
