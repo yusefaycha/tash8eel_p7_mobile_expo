@@ -11,7 +11,7 @@ const getDirectionURL = () => {
 
 const getStartMilestone = (list) => {
     let start = list.find(m => m.type === 'Start')
-    if (!start) start = { ...list[0], type: 'Start' }
+    if (!start) start = { ...list.filter(m => m.type !== 'End')[0], type: 'Start' }
     return start
 }
 
@@ -21,7 +21,7 @@ const getEndMilestone = (list) => {
     return end
 }
 
-const srtingToCoordinate = (str) => {
+const stringToCoordinate = (str) => {
     return ({
         latitude: +str.split(',')[0],
         longitude: +str.split(',')[1],
@@ -66,7 +66,7 @@ const getMilestoneAndDirectionCoords = async (event, setMilestones, setRegion, s
                 end
             ]
             setMilestones(milestonesRes)
-            setRegion(region => { return { ...region, ...srtingToCoordinate(getStartMilestone(milestonesRes).location) } })
+            setRegion(region => { return { ...region, ...stringToCoordinate(start.location) } })
             getDirectionCoords(milestonesRes, setDirectionCoords)
 
         })
@@ -90,7 +90,7 @@ const milestoneToMarker = (milestone, index) => {
     }
     return (<Marker
         key={index}
-        coordinate={srtingToCoordinate(milestone.location)}
+        coordinate={stringToCoordinate(milestone.location)}
         title={milestone.name}
         pinColor={color}
     // description={milestone.description}
@@ -147,16 +147,20 @@ const getPhotos = async (event, setPhotos) => {
 }
 
 const getDirectionCoords = async (milestones, setDirectionCoords) => {
+    // console.log('milestons: ' + milestones.length) /////
     for (let i = 0; i < milestones.length - 1; i++) {
         const url = getDirectionURL() +
-            `start=${srtingToCoordinate(milestones[i].location).longitude}` +
-            `,${srtingToCoordinate(milestones[i].location).latitude}` +
-            `&end=${srtingToCoordinate(milestones[i + 1].location).longitude}` +
-            `,${srtingToCoordinate(milestones[i + 1].location).latitude}`
+            `start=${stringToCoordinate(milestones[i].location).longitude}` +
+            `,${stringToCoordinate(milestones[i].location).latitude}` +
+            `&end=${stringToCoordinate(milestones[i + 1].location).longitude}` +
+            `,${stringToCoordinate(milestones[i + 1].location).latitude}`
+            // console.log('URL: ' + url) ////
         await fetch(url)
             .then(res => res.json())
             .then(data => {
                 setDirectionCoords(p => [...p, ...data.features[0].geometry.coordinates])
+
+                // console.log(`directionCoords[${i+1}->${i+2}]: start(${data.features[0].geometry.coordinates[0]}) end(${data.features[0].geometry.coordinates[data.features[0].geometry.coordinates.length - 1]})`) /////
             })
             .catch(error => console.error(error))
     }
@@ -182,7 +186,7 @@ export {
     getBaseUrl,
     getStartMilestone,
     getEndMilestone,
-    srtingToCoordinate,
+    stringToCoordinate,
     formatDate,
     coordsToMarker,
     getDirectionURL,

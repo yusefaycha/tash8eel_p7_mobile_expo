@@ -4,6 +4,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Gallery from 'react-native-image-gallery';
 import MapView, { Polyline } from 'react-native-maps';
 import { formatDate, getMilestoneAndDirectionCoords, getPhotos, getTrail, milestoneToMarker } from '../actions/actions';
+import WebView from 'react-native-webview';
 
 export default function EventDetails({ route }) {
 
@@ -21,7 +22,7 @@ export default function EventDetails({ route }) {
     const [photos, setPhotos] = useState([])
 
     useEffect(
-         () => {
+        () => {
             if (event.trail !== '') {
                 getTrail(event, setTrail)
                 getMilestoneAndDirectionCoords(event, setMilestones, setRegion, setDirectionCoords)
@@ -52,12 +53,22 @@ export default function EventDetails({ route }) {
                                     longitude: coords[0]
                                 }
                             })}
+                            // coordinates={milestones.map(m => {
+                            //     return {
+                            //         latitude: +m.location.split(',')[0],
+                            //         longitude: +m.location.split(',')[1],
+                            //     }
+                            // })}
                             strokeWidth={6}
                             strokeColor='#f00'
                         /> :
                         null
                     }
                 </MapView>
+                {/* <WebView
+                    style={styles.webView}
+                    source={{ uri: "https://www.alltrails.com/widget/map/map-june-23-2023-75ac2c9?elevationDiagram=false&u=m&sh=ugo4ux" }}
+                /> */}
                 <View style={styles.body}>
                     <Text style={styles.title}>{event.name}</Text>
                     <View style={styles.table}>
@@ -179,5 +190,12 @@ const styles = StyleSheet.create({
     description: {
         fontSize: 16,
         // textAlign: 'justify'
+    },
+    webView: {
+        width:"100%",
+        height: 400,
+        marginVertical: 0,
+        marginHorizontal: 0,
+        borderWidth:0
     }
 })
