@@ -9,7 +9,8 @@ export default function EventCard({ event, navigation }) {
 
   useEffect(
     () => {
-      getCoverPhoto(event, setCover)
+      if(event.photos.length !== 0)
+        getCoverPhoto(event, setCover)
     },
     []
   )

@@ -4,7 +4,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Gallery from 'react-native-image-gallery';
 import MapView, { Polyline } from 'react-native-maps';
 import { formatDate, getMilestoneAndDirectionCoords, getPhotos, getTrail, milestoneToMarker } from '../actions/actions';
-import WebView from 'react-native-webview';
+// import WebView from 'react-native-webview';
 
 export default function EventDetails({ route }) {
 
@@ -67,7 +67,7 @@ export default function EventDetails({ route }) {
                 </MapView>
                 {/* <WebView
                     style={styles.webView}
-                    source={{ uri: "https://www.alltrails.com/widget/map/map-june-23-2023-75ac2c9?elevationDiagram=false&u=m&sh=ugo4ux" }}
+                    source={{ uri: "https://www.alltrails.com/widget/map/map-june-23-2023-75ac2c9?elevationDiagram=true&u=m&sh=ugo4ux" }}
                 /> */}
                 <View style={styles.body}>
                     <Text style={styles.title}>{event.name}</Text>
